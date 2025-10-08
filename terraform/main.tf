@@ -19,7 +19,7 @@ provider "aws" {
 # Variables
 ############################################################
 variable "aws_region" {
-  default = "us-east-1"
+  default = "us-east-2"
 }
 
 variable "key_name" {
@@ -125,11 +125,11 @@ resource "aws_iam_role" "cw_role" {
 
 resource "aws_iam_role_policy_attachment" "cw_attach" {
   role       = aws_iam_role.cw_role.name
-  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy" 
 }
 
 resource "aws_iam_instance_profile" "cw_profile" {
-  name = "AmsaInstanceProfile"
+  name = "AmsaInstanceProfile-1"
   role = aws_iam_role.cw_role.name
 }
 
