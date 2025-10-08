@@ -14,14 +14,14 @@ jobs:
     - name: Checkout Frontend
       uses: actions/checkout@v3
       with:
-        repository: 'Ajinkya-0599/frontend-amsa-ajinkya'
+        repository: 'Ajinkya-0599/terraform-amsa-frontend'
         path: frontend
 
     # 2️⃣ Checkout Backend
     - name: Checkout Backend
       uses: actions/checkout@v3
       with:
-        repository: 'Ajinkya-0599/backend-amsa-ajinkya'
+        repository: 'Ajinkya-0599/terraform-amsa-backend'
         path: backend
 
     # 3️⃣ Setup Node.js
@@ -47,7 +47,7 @@ jobs:
       uses: aws-actions/aws-cloudformation-github-deploy@v1
       with:
         name: amsa-stack
-        template: ./frontend/cloudformation/amsa-stack.yml   # <-- corrected path
+        template: ./frontend/terraform/main.tf   # <-- corrected path
         no-fail-on-empty-changeset: true
         capabilities: CAPABILITY_NAMED_IAM
         parameter-overrides: KeyName=${{ secrets.EC2_KEY_NAME }} 
@@ -81,26 +81,26 @@ jobs:
         port: 22
         script: |
           # Clone repos if not present
-          [ ! -d "/home/ubuntu/frontend-amsa-ajinkya" ] && git clone https://github.com/Ajinkya-0599/frontend-amsa-ajinkya.git /home/ubuntu/frontend-amsa-ajinkya
-          [ ! -d "/home/ubuntu/backend-amsa-ajinkya" ] && git clone https://github.com/Ajinkya-0599/backend-amsa-ajinkya.git /home/ubuntu/backend-amsa-ajinkya
+          [ ! -d "/home/ubuntu/terraform-amsa-frontend" ] && git clone https://github.com/Ajinkya-0599/terraform-amsa-frontend.git /home/ubuntu/terraform-amsa-frontend
+          [ ! -d "/home/ubuntu/terraform-amsa-backend" ] && git clone https://github.com/Ajinkya-0599/terraform-amsa-backend.git /home/ubuntu/terraform-amsa-backend
 
           # Pull latest changes
-          cd /home/ubuntu/frontend-amsa-ajinkya && git pull origin main
-          cd /home/ubuntu/backend-amsa-ajinkya && git pull origin main
+          cd /home/ubuntu/terraform-amsa-frontend && git pull origin main
+          cd /home/ubuntu/terraform-amsa-backend && git pull origin main
 
           # Frontend setup
-          cd /home/ubuntu/frontend-amsa-ajinkya
+          cd /home/ubuntu/terraform-amsa-frontend
           npm install
           npm run build
           npm run export || true
-          sudo rm -rf /var/www/frontend-amsa-ajinkya
-          sudo mkdir -p /var/www/frontend-amsa-ajinkya
-          sudo cp -r out/* /var/www/frontend-amsa-ajinkya/
+          sudo rm -rf /var/www/terraform-amsa-frontend
+          sudo mkdir -p /var/www/terraform-amsa-frontend
+          sudo cp -r out/* /var/www/terraform-amsa-frontend/
 
           # Backend setup
-          cd /home/ubuntu/backend-amsa-ajinkya
+          cd /home/ubuntu/terraform-amsa-backend
           npm install
-          pm2 restart amsa-backend || pm2 start server.js --name amsa-backend --watch
+          pm2 restart terraform-amsa-backend || pm2 start server.js --name terraform-amsa-backend --watch
 
           # Reload services
           sudo nginx -t
