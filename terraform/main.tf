@@ -129,7 +129,7 @@ resource "aws_iam_role_policy_attachment" "cw_attach" {
 }
 
 resource "aws_iam_instance_profile" "cw_profile" {
-  name = "AmsaInstanceProfile-1"
+  name = "AmsaInstanceProfile" 
   role = aws_iam_role.cw_role.name
 }
 
