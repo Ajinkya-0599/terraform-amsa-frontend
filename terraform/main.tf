@@ -34,7 +34,7 @@ variable "instance_type" {
 
 variable "ami_id" {
   description = "Ubuntu 22.04 AMI ID for ap-south-1"
-  default     = "ami-0cfde0ea8edd312d4"
+  default     = "ami-077b630ef539aa0b5"  
 }
 
 variable "alert_email" {
