@@ -49,50 +49,61 @@ resource "aws_security_group" "amsa_sg" {
   name        = "AmsaSecurityGroup"
   description = "Allow SSH, HTTP, and Backend API"
 
-  ingress = [
-  {
+  # Ingress rules
+  ingress {
     description      = "SSH access"
     from_port        = 22
     to_port          = 22
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
-  },
-  {
+    prefix_list_ids  = []
+    security_groups  = []
+    self             = false
+  }
+
+  ingress {
     description      = "HTTP access"
     from_port        = 80
     to_port          = 80
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
-  },
-  {
+    prefix_list_ids  = []
+    security_groups  = []
+    self             = false
+  }
+
+  ingress {
     description      = "Backend API access"
     from_port        = 3001
     to_port          = 3001
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
+    prefix_list_ids  = []
+    security_groups  = []
+    self             = false
   }
-]
 
-
-  egress = [
-  {
+  # Egress rules
+  egress {
     description      = "Allow all outbound traffic"
     from_port        = 0
     to_port          = 0
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
+    prefix_list_ids  = []
+    security_groups  = []
+    self             = false
   }
-]
-
 
   tags = {
     Name = "Amsa-SecurityGroup"
   }
 }
+
 
 ############################################################
 # IAM Role + Instance Profile (for CloudWatch Agent)
