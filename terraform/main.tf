@@ -1,6 +1,6 @@
-############################################################
-# Terraform: AMSA EC2 Infrastructure with Monitoring
-############################################################
+
+### Terraform: AMSA EC2 Infrastructure with Monitoring ###
+
 terraform {
   required_providers {
     aws = {
@@ -15,9 +15,9 @@ provider "aws" {
   region = var.aws_region
 }
 
-############################################################
-# Variables
-############################################################
+
+### Variables ###
+
 variable "aws_region" {
   default = "us-east-2"
 }
@@ -42,14 +42,14 @@ variable "alert_email" {
   default     = "ajinkya.suryawanshi@alphaseam.com"
 }
 
-############################################################
-# Security Group
-############################################################
+
+### Security Group ###
+
 resource "aws_security_group" "amsa_sg" {
   name        = "AmsaSecurityGroup"
   description = "Allow SSH, HTTP, and Backend API"
 
-  # Ingress rules
+  ## Ingress rules
   ingress {
     description      = "SSH access"
     from_port        = 22
@@ -86,7 +86,7 @@ resource "aws_security_group" "amsa_sg" {
     self             = false
   }
 
-  # Egress rules
+  ## Egress rules
   egress {
     description      = "Allow all outbound traffic"
     from_port        = 0
@@ -105,9 +105,8 @@ resource "aws_security_group" "amsa_sg" {
 }
 
 
-############################################################
-# IAM Role + Instance Profile (for CloudWatch Agent)
-############################################################
+### IAM Role + Instance Profile (for CloudWatch Agent) ###
+
 resource "aws_iam_role" "cw_role" {
   name = "AmsaCloudWatchRole"
 
@@ -133,9 +132,9 @@ resource "aws_iam_instance_profile" "cw_profile" {
   role = aws_iam_role.cw_role.name
 }
 
-############################################################
-# EC2 Instance
-############################################################
+
+### EC2 Instance ###
+
 resource "aws_instance" "amsa_instance" {
   ami                    = var.ami_id
   instance_type          = var.instance_type
@@ -237,9 +236,9 @@ resource "aws_instance" "amsa_instance" {
               EOF
 }
 
-############################################################
-# SNS Topic + Subscription
-############################################################
+
+### SNS Topic + Subscription ###
+
 resource "aws_sns_topic" "alarm_topic" {
   name         = "AmsaMonitoringAlerts"
   display_name = "Amsa Monitoring Alerts"
@@ -251,9 +250,9 @@ resource "aws_sns_topic_subscription" "email_sub" {
   endpoint  = var.alert_email
 }
 
-############################################################
-# CloudWatch Alarms
-############################################################
+
+### CloudWatch Alarms ###
+
 resource "aws_cloudwatch_metric_alarm" "cpu_high" {
   alarm_name          = "Amsa-CPU-High"
   comparison_operator = "GreaterThanThreshold"
@@ -300,9 +299,9 @@ resource "aws_cloudwatch_metric_alarm" "disk_high" {
   }
 }
 
-############################################################
-# CloudWatch Dashboard
-############################################################
+
+### CloudWatch Dashboard ###
+
 resource "aws_cloudwatch_dashboard" "amsa_dashboard" {
   dashboard_name = "AmsaMonitoringDashboard"
   dashboard_body = jsonencode({
@@ -353,9 +352,9 @@ resource "aws_cloudwatch_dashboard" "amsa_dashboard" {
   })
 }
 
-############################################################
-# Outputs
-############################################################
+
+### Outputs ###
+
 output "public_ip" {
   value = aws_instance.amsa_instance.public_ip
 }
